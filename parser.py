@@ -115,7 +115,7 @@ def deal_set_param(cmd_info_list, set_param_list):
         cur_cmd_list = []
         if cur_param_name in cmd_info.exec_cmd:  # 命令包含当前set参数
             for cur_param_val in cur_param_values:
-                cur_cmd_info = copy.copy(cmd_info)
+                cur_cmd_info = copy.deepcopy(cmd_info)
                 cur_cmd_info.memo += ";{}={}".format(cur_param_name, cur_param_val)
                 cur_cmd_info.exec_cmd = cur_cmd_info.exec_cmd.replace(cur_param_name, str(cur_param_val))
                 cur_cmd_list.append(cur_cmd_info)
