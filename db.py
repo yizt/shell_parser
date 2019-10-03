@@ -25,9 +25,11 @@ def get_session(url):
 
 
 class TbParamCfg(Base):
+    """
+    参数配置表
+    """
     __tablename__ = 'tb_param_cfg'
 
-    func_id = Column(String(20))
     param_type = Column(String(20))
     param_name = Column(String(40))
     param_desc = Column(String(200))
@@ -37,7 +39,25 @@ class TbParamCfg(Base):
     replace_order = Column(BigInteger())
 
     __table_args__ = (
-        PrimaryKeyConstraint('func_id', 'param_type', 'param_name'),
+        PrimaryKeyConstraint('param_type', 'param_name'),
+        {},
+    )
+
+
+class TbCmdCfg(Base):
+    """
+    待执行命令配置表
+    """
+    __tablename__ = 'tb_cmd_cfg'
+
+    seq = Column(BigInteger())
+    func_id = Column(String(40))
+    cfg_key = Column(String(40))
+    memo = Column(String(100))
+    exec_cmd = Column(Text())
+    enable = Column(String(1))
+    __table_args__ = (
+        PrimaryKeyConstraint('seq', 'func_id'),
         {},
     )
 
@@ -45,8 +65,11 @@ class TbParamCfg(Base):
 def main():
     from config import cur_config as cfg
     sess = get_session(cfg.url)
-    param_cfg = TbParamCfg(func_id='123', param_type='232', param_name='123')
-    sess.add(param_cfg)
+    # param_cfg = TbParamCfg(param_type='2332', param_name='123')
+    # sess.add(param_cfg)
+    # sess.commit()
+    cmd_cfg = TbCmdCfg(func_id='123', seq=1.5)
+    sess.add(cmd_cfg)
     sess.commit()
 
 
