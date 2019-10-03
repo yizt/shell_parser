@@ -135,7 +135,7 @@ def deal_in_param(cmd_cfg_list, in_param_dict, datatime, business_param=''):
     :param cmd_cfg_list: list of TbCmdCfg
     :param in_param_dict: dict{param_name: param_value}
     :param datatime: 数据日期
-    :param business_param: 业务参数
+    :param business_param: 自定义的业务参数 eg: a=15&b=abc&c=hello
     :return result_list: list of TbExecCmd
     """
     result_list = []
@@ -177,8 +177,8 @@ def parse(cmd_cfg_list, session, datatime, business_param=''):
     将命令配置对象TbCmdCfg解析为命令运行对象TbExecCmd
     :param cmd_cfg_list: list of TbCmdCfg
     :param session:
-    :param datatime:
-    :param business_param:
+    :param datatime: 数据日期
+    :param business_param: 自定义的业务参数 eg: a=15&b=abc&c=hello
     :return cmd_info_list: list of TbExecCmd
     """
     in_param_dict, single_param_dict, set_param_dict = get_params(session, datatime, business_param)
@@ -188,4 +188,7 @@ def parse(cmd_cfg_list, session, datatime, business_param=''):
     cmd_info_list = deal_single_param(cmd_info_list, single_param_dict)
     # 替换集合参数
     cmd_info_list = deal_set_param(cmd_info_list, list(set_param_dict))
+    # seq字段赋值
+    for i, cmd_info in enumerate(cmd_info_list):
+        cmd_info.seq = i + 1
     return cmd_info_list
