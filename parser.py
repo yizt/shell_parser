@@ -15,7 +15,7 @@ def get_in_param(datatime, business_param=''):
     获取输入参数
     :param datatime: 数据日期
     :param business_param: 自定义的业务参数 eg: a=15&b=abc&c=hello
-    :return:
+    :return: dict{param_name: param_value}
     """
     result_dict = dict()
     # 日期
@@ -41,11 +41,12 @@ def get_single_param(session, in_param_dict):
     """
     获取单值参数
     :param session:
-    :param in_param_dict:
-    :return:
+    :param in_param_dict: dict{param_name: param_value}
+    :return: dict{param_name: param_value}
     """
     single_params = db.get_param_cfg(session, 'single')  # list of TbParamCfg
     result_dict = {}
+
     for param_cfg in single_params:
         expr = param_cfg.param_val_expr
         # 逐个替换输入参数
@@ -54,5 +55,27 @@ def get_single_param(session, in_param_dict):
 
         # 根据表达式获取常量值
         result_dict[param_cfg.param_name] = db.get_constant_val(session, expr)
+
+    return result_dict
+
+
+def get_set_param(session, in_param_dict):
+    """
+    获取集合参数
+    :param session:
+    :param in_param_dict: dict{param_name: param_value}
+    :return: dict{param_name: param_value}
+    """
+    set_params = db.get_param_cfg(session, 'set')  # list of TbParamCfg
+
+    result_dict = {}
+    for param_cfg in set_params:
+        expr = param_cfg.param_val_expr
+        # 逐个替换输入参数
+        for k, v in in_param_dict:
+            expr = expr.replace(k, v)
+
+        # 根据表达式获取集合值
+        result_dict[param_cfg.param_name] = db.get_list_values(session, expr)
 
     return result_dict
