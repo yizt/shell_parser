@@ -8,6 +8,7 @@ Created on 2019/10/3 下午2:34
 
 """
 import db
+from db import TbExecCmd
 import copy
 
 
@@ -124,5 +125,31 @@ def deal_set_param(cmd_info_list, set_param_list):
 
         # 递归处理
         result_list.extend(deal_set_param(cur_cmd_list, set_param_list[1:]))
+
+    return result_list
+
+
+def deal_in_param(cmd_cfg_list, datatime, in_param_dict, business_param=''):
+    """
+    处理输入参数
+    :param cmd_cfg_list: list of TbCmdCfg
+    :param datatime: 数据日期
+    :param in_param_dict: dict{param_name: param_value}
+    :param business_param: 业务参数
+    :return result_list: list of TbExecCmd
+    """
+    result_list = []
+    for cmd_cfg in cmd_cfg_list:
+        cmd_info = TbExecCmd(datatime=datatime,
+                             func_id=cmd_cfg.func_id,
+                             cfg_key=cmd_cfg.cfg_key,
+                             memo=cmd_cfg.memo,
+                             exec_cmd=cmd_cfg.exec_cmd,
+                             business_param=business_param)
+        # 替换所有输入参数
+        for param_name, param_val in in_param_dict:
+            cmd_info.exec_cmd = cmd_info.exec_cmd.replace(param_name, param_val)
+
+        result_list.append(cmd_info)
 
     return result_list
