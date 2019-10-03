@@ -5,7 +5,7 @@ Created on 2019/10/3 下午8:18
 @author: mick.yi
 
 """
-import os
+import subprocess
 import time
 import datetime
 import traceback
@@ -21,10 +21,9 @@ def run_cmd(session, cmd_info):
     """
     start_time = time.time()
     try:
-        flag = os.system(cmd_info.exec_cmd)
-        err_msg = ''
+        flag, err_msg = subprocess.getstatusoutput(cmd_info.exec_cmd)
     except BaseException as e:
-        print('=======e:{}'.format(e))
+        print('eception:{}'.format(e))
         err_msg = traceback.format_exc()
 
     end_time = time.time()
