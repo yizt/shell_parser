@@ -16,7 +16,7 @@ def get_in_param(datatime, business_param=''):
     """
     获取输入参数
     :param datatime: 数据日期
-    :param business_param: 自定义的业务参数 eg: a=15&b=abc&c=hello
+    :param business_param: 自定义的业务参数 eg: a=15,b=abc,c=hello
     :return: dict{param_name: param_value}
     """
     result_dict = dict()
@@ -88,7 +88,7 @@ def get_params(session, datatime, business_param=''):
     获取所有配置参数
     :param session:
     :param datatime: 数据日期
-    :param business_param: 自定义的业务参数 eg: a=15&b=abc&c=hello
+    :param business_param: 自定义的业务参数 eg: a=15,b=abc,c=hello
     :return in_params: dict{param_name: param_value}
     :return single_params: dict{param_name: param_value}
     :return set_params: dict{param_name: param_value}
@@ -134,7 +134,7 @@ def deal_in_param(cmd_cfg_list, in_param_dict, datatime, business_param=''):
     :param cmd_cfg_list: list of TbCmdCfg
     :param in_param_dict: dict{param_name: param_value}
     :param datatime: 数据日期
-    :param business_param: 自定义的业务参数 eg: a=15&b=abc&c=hello
+    :param business_param: 自定义的业务参数 eg: a=15,b=abc,c=hello
     :return result_list: list of TbExecCmd
     """
     result_list = []
@@ -176,7 +176,7 @@ def parse(cmd_cfg_list, session, datatime, business_param=''):
     :param cmd_cfg_list: list of TbCmdCfg
     :param session:
     :param datatime: 数据日期
-    :param business_param: 自定义的业务参数 eg: a=15&b=abc&c=hello
+    :param business_param: 自定义的业务参数 eg: a=15,b=abc,c=hello
     :return cmd_info_list: list of TbExecCmd
     """
     in_param_dict, single_param_dict, set_param_dict = get_params(session, datatime, business_param)
