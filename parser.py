@@ -170,3 +170,22 @@ def deal_single_param(cmd_info_list, single_param_dict):
         result_list.append(cmd_info)
 
     return result_list
+
+
+def parse(cmd_cfg_list, session, datatime, business_param=''):
+    """
+    将命令配置对象TbCmdCfg解析为命令运行对象TbExecCmd
+    :param cmd_cfg_list: list of TbCmdCfg
+    :param session:
+    :param datatime:
+    :param business_param:
+    :return cmd_info_list: list of TbExecCmd
+    """
+    in_param_dict, single_param_dict, set_param_dict = get_params(session, datatime, business_param)
+    # 替换输出参数
+    cmd_info_list = deal_in_param(cmd_cfg_list, in_param_dict, datatime, business_param)
+    # 替换单值参数
+    cmd_info_list = deal_single_param(cmd_info_list, single_param_dict)
+    # 替换集合参数
+    cmd_info_list = deal_set_param(cmd_info_list, list(set_param_dict))
+    return cmd_info_list
