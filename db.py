@@ -6,7 +6,8 @@ Created on 2019/10/3 上午8:50
 
 """
 
-from sqlalchemy import Column, String, Text, BigInteger, PrimaryKeyConstraint, create_engine
+from sqlalchemy import Column, String, Text, BigInteger, FLOAT, SMALLINT, \
+    DateTime, Date, PrimaryKeyConstraint, create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 
@@ -50,14 +51,39 @@ class TbCmdCfg(Base):
     """
     __tablename__ = 'tb_cmd_cfg'
 
-    seq = Column(BigInteger())
+    seq = Column(FLOAT())
     func_id = Column(String(40))
     cfg_key = Column(String(40))
     memo = Column(String(100))
     exec_cmd = Column(Text())
     enable = Column(String(1))
+
     __table_args__ = (
         PrimaryKeyConstraint('seq', 'func_id'),
+        {},
+    )
+
+
+class TbExecCmd(Base):
+    """
+    命令运行信息表
+    """
+    __tablename__ = 'tb_execcmd'
+
+    datatime = Column(String(8))
+    func_id = Column(String(40))
+    seq = Column(BigInteger())
+    memo = Column(String(100))
+    exec_cmd = Column(Text())
+    flag = Column(SMALLINT())
+    start_time = Column(DateTime())
+    end_time = Column(DateTime())
+    exec_elapsed = Column(BigInteger())
+    exec_date = Column(Date())
+    business_param = Column(String(40))
+
+    __table_args__ = (
+        PrimaryKeyConstraint('datatime', 'seq', 'func_id', 'business_param'),
         {},
     )
 
@@ -68,8 +94,9 @@ def main():
     # param_cfg = TbParamCfg(param_type='2332', param_name='123')
     # sess.add(param_cfg)
     # sess.commit()
-    cmd_cfg = TbCmdCfg(func_id='123', seq=1.5)
-    sess.add(cmd_cfg)
+    # cmd_cfg = TbCmdCfg(func_id='1243', seq=2.5)
+    exec_cmd = TbExecCmd(func_id='1', seq=1, datatime='201808')
+    sess.add(exec_cmd)
     sess.commit()
 
 
