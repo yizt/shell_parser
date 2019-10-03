@@ -108,7 +108,6 @@ def deal_set_param(cmd_info_list, set_param_list):
     """
     if len(set_param_list) == 0:
         return cmd_info_list
-
     cur_param_name, cur_param_values = set_param_list[0]  # 当前的参数键值对
     result_list = []  # 最终结果
     # 遍历所有元素
@@ -142,7 +141,6 @@ def deal_in_param(cmd_cfg_list, in_param_dict, datatime, business_param=''):
     for cmd_cfg in cmd_cfg_list:
         cmd_info = TbExecCmd(datatime=datatime,
                              func_id=cmd_cfg.func_id,
-                             cfg_key=cmd_cfg.cfg_key,
                              memo=cmd_cfg.memo,
                              exec_cmd=cmd_cfg.exec_cmd,
                              business_param=business_param)
@@ -187,7 +185,7 @@ def parse(cmd_cfg_list, session, datatime, business_param=''):
     # 替换单值参数
     cmd_info_list = deal_single_param(cmd_info_list, single_param_dict)
     # 替换集合参数
-    cmd_info_list = deal_set_param(cmd_info_list, list(set_param_dict))
+    cmd_info_list = deal_set_param(cmd_info_list, list(set_param_dict.items()))
     # seq字段赋值
     for i, cmd_info in enumerate(cmd_info_list):
         cmd_info.seq = i + 1
