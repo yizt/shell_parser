@@ -117,7 +117,7 @@ def deal_set_param(cmd_info_list, set_param_list):
             for cur_param_val in cur_param_values:
                 cur_cmd_info = copy.copy(cmd_info)
                 cur_cmd_info.memo += ";{}={}".format(cur_param_name, cur_param_val)
-                cur_cmd_info.exec_cmd = cur_cmd_info.exec_cmd.replace(cur_param_name, cur_param_val)
+                cur_cmd_info.exec_cmd = cur_cmd_info.exec_cmd.replace(cur_param_name, str(cur_param_val))
                 cur_cmd_list.append(cur_cmd_info)
         else:
             cur_cmd_list.append(cmd_info)
