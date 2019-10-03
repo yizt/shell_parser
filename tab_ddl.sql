@@ -36,7 +36,7 @@ CREATE TABLE `tb_execcmd` (
   `start_time` datetime DEFAULT NULL,
   `end_time` datetime DEFAULT NULL,
   `exec_elapsed` bigint(22) DEFAULT NULL,
-  `exec_date` datetime DEFAULT NULL,
+  `exec_date` date DEFAULT NULL,
   `business_param` varchar(40) NOT NULL DEFAULT '',
   PRIMARY KEY (`datatime`,`func_id`,`seq`,`business_param`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
