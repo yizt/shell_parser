@@ -7,7 +7,7 @@ Created on 2019/10/3 上午8:50
 """
 
 from sqlalchemy import Column, String, Text, BigInteger, FLOAT, SMALLINT, \
-    DateTime, Date, PrimaryKeyConstraint, create_engine
+    DateTime, Date, PrimaryKeyConstraint, create_engine, and_
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 
@@ -88,6 +88,30 @@ class TbExecCmd(Base):
     )
 
 
+def get_cmd_cfg(session, func_id):
+    """
+    获取指定func_id的cmd配置
+    :param session:
+    :param func_id: 功能id
+    :return: list of TbCmdCfg
+    """
+    return session.query(TbCmdCfg).filter(
+        and_(TbCmdCfg.enable == '1', TbCmdCfg.func_id == func_id)).order_by(TbCmdCfg.seq).all()
+
+
+def get_exec_cmd(session, func_id, business_param=''):
+    """
+    获取指定func_id的待执行命令
+    :param session:
+    :param func_id:
+    :param business_param:业务参数
+    :return:
+    """
+    return session.query(TbExecCmd).filter(
+        and_(TbExecCmd.func_id == func_id,
+             TbExecCmd.business_param == business_param)).order_by(TbExecCmd.seq).all()
+
+
 def main():
     from config import cur_config as cfg
     sess = get_session(cfg.url)
@@ -95,8 +119,20 @@ def main():
     # sess.add(param_cfg)
     # sess.commit()
     # cmd_cfg = TbCmdCfg(func_id='1243', seq=2.5)
-    exec_cmd = TbExecCmd(func_id='1', seq=1, datatime='201808')
-    sess.add(exec_cmd)
+    # exec_cmd = TbExecCmd(func_id='1', seq=1, datatime='201808', memo='abc')
+    # sess.add(exec_cmd)
+
+    # sess(exec_cmd)
+    # sess.bulk_update_mappings(TbExecCmd, [{'func_id': '1',
+    #                                        'seq': 1,
+    #                                        'datatime': '201808',
+    #                                        'business_param': '',
+    #                                        'exec_cmd': 'efg'}])
+    # x = sess.query(TbExecCmd).all()
+    # print(x[0].func_id)
+    xs = get_exec_cmd(sess, '1')
+    for x in xs:
+        print(x)
     sess.commit()
 
 
