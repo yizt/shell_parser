@@ -76,6 +76,7 @@ class TbExecCmd(Base):
     memo = Column(String(100))
     exec_cmd = Column(Text())
     flag = Column(SMALLINT())
+    err_msg = Column(Text())
     start_time = Column(DateTime())
     end_time = Column(DateTime())
     exec_elapsed = Column(BigInteger())
@@ -184,15 +185,17 @@ def main():
     #                                        'datatime': '201808',
     #                                        'business_param': '',
     #                                        'exec_cmd': 'efg'}])
-    # x = sess.query(TbExecCmd).all()
+    x = sess.query(TbCmdCfg).all()
+    import copy
+    y = copy.copy(x[0])
     # print(x[0].func_id)
     # xs = get_exec_cmd(sess, '201808', '1')
     # for x in xs:
     #     print(x.func_id)
     # delete_exec_cmd(sess, '201808', '1')
     # get_param_cfg(sess, 'in')
-    x = sess.execute('select 2018')
-    print(x)
+    # x = sess.execute('select 2018')
+    print(y.func_id)
     sess.commit()
 
 
