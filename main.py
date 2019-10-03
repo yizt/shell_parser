@@ -29,4 +29,4 @@ def main(func_id, datatime, mode='normal', business_param=''):
 
 
 if __name__ == '__main__':
-    main(*sys.argv)
+    main(*sys.argv[1:])
