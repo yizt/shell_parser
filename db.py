@@ -88,6 +88,19 @@ class TbExecCmd(Base):
     )
 
 
+def get_param_cfg(session, param_type):
+    """
+    获取指定类型的参数配置信息
+    :param session:
+    :param param_type: 参数类别 in|single|set
+    :return:
+    """
+    return session.query(TbParamCfg).filter(
+        and_(TbParamCfg.enable == '1',
+             TbParamCfg.param_type == param_type)).order_by(
+        TbParamCfg.replace_order).all()
+
+
 def get_cmd_cfg(session, func_id):
     """
     获取指定func_id的cmd配置
@@ -96,7 +109,9 @@ def get_cmd_cfg(session, func_id):
     :return: list of TbCmdCfg
     """
     return session.query(TbCmdCfg).filter(
-        and_(TbCmdCfg.enable == '1', TbCmdCfg.func_id == func_id)).order_by(TbCmdCfg.seq).all()
+        and_(TbCmdCfg.enable == '1',
+             TbCmdCfg.func_id == func_id)).order_by(
+        TbCmdCfg.seq).all()
 
 
 def get_exec_cmd(session, datatime, func_id, business_param=''):
@@ -111,7 +126,8 @@ def get_exec_cmd(session, datatime, func_id, business_param=''):
     return session.query(TbExecCmd).filter(
         and_(TbExecCmd.datatime == datatime,
              TbExecCmd.func_id == func_id,
-             TbExecCmd.business_param == business_param)).order_by(TbExecCmd.seq).all()
+             TbExecCmd.business_param == business_param)).order_by(
+        TbExecCmd.seq).all()
 
 
 def delete_exec_cmd(session, datatime, func_id, business_param=''):
@@ -127,6 +143,29 @@ def delete_exec_cmd(session, datatime, func_id, business_param=''):
     for x in xs:
         session.delete(x)
     session.commit()
+
+
+def get_constant_val(session, expr):
+    """
+    获取常量值
+    :param session:
+    :param expr: eg: '201808' or date_format(now(),'%Y%m%d')
+    :return:
+    """
+    xs = session.execute('select {}'.format(expr))
+    return next(xs)[0]
+
+
+def get_list_values(session, expr):
+    """
+    获取指定表达式的值列表
+    :param session:
+    :param expr: sql表达式
+    :return: list of values
+    """
+    xs = session.execute(expr)
+    xs = [x[0] for x in xs]
+    return xs
 
 
 def main():
@@ -147,10 +186,13 @@ def main():
     #                                        'exec_cmd': 'efg'}])
     # x = sess.query(TbExecCmd).all()
     # print(x[0].func_id)
-    xs = get_exec_cmd(sess, '201808', '1')
-    for x in xs:
-        print(x.func_id)
-    delete_exec_cmd(sess, '201808', '1')
+    # xs = get_exec_cmd(sess, '201808', '1')
+    # for x in xs:
+    #     print(x.func_id)
+    # delete_exec_cmd(sess, '201808', '1')
+    # get_param_cfg(sess, 'in')
+    x = sess.execute('select 2018')
+    print(x)
     sess.commit()
 
 

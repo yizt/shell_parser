@@ -35,3 +35,24 @@ def get_in_param(datatime, business_param=''):
             result_dict[k] = v
 
     return result_dict
+
+
+def get_single_param(session, in_param_dict):
+    """
+    获取单值参数
+    :param session:
+    :param in_param_dict:
+    :return:
+    """
+    single_params = db.get_param_cfg(session, 'single')  # list of TbParamCfg
+    result_dict = {}
+    for param_cfg in single_params:
+        expr = param_cfg.param_val_expr
+        # 逐个替换输入参数
+        for k, v in in_param_dict:
+            expr = expr.replace(k, v)
+
+        # 根据表达式获取常量值
+        result_dict[param_cfg.param_name] = db.get_constant_val(session, expr)
+
+    return result_dict
