@@ -52,7 +52,7 @@ def get_single_param(session, in_param_dict):
     for param_cfg in single_params:
         expr = param_cfg.param_val_expr
         # 逐个替换输入参数
-        for k, v in in_param_dict:
+        for k, v in in_param_dict.items():
             expr = expr.replace(k, v)
 
         # 根据表达式获取常量值
@@ -74,7 +74,7 @@ def get_set_param(session, in_param_dict):
     for param_cfg in set_params:
         expr = param_cfg.param_val_expr
         # 逐个替换输入参数
-        for k, v in in_param_dict:
+        for k, v in in_param_dict.items():
             expr = expr.replace(k, v)
 
         # 根据表达式获取集合值
