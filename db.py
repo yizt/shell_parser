@@ -99,17 +99,34 @@ def get_cmd_cfg(session, func_id):
         and_(TbCmdCfg.enable == '1', TbCmdCfg.func_id == func_id)).order_by(TbCmdCfg.seq).all()
 
 
-def get_exec_cmd(session, func_id, business_param=''):
+def get_exec_cmd(session, datatime, func_id, business_param=''):
     """
-    获取指定func_id的待执行命令
+    获取指定时间和func_id的待执行命令
     :param session:
+    :param datatime: 数据日期
     :param func_id:
     :param business_param:业务参数
     :return:
     """
     return session.query(TbExecCmd).filter(
-        and_(TbExecCmd.func_id == func_id,
+        and_(TbExecCmd.datatime == datatime,
+             TbExecCmd.func_id == func_id,
              TbExecCmd.business_param == business_param)).order_by(TbExecCmd.seq).all()
+
+
+def delete_exec_cmd(session, datatime, func_id, business_param=''):
+    """
+    删除定时间和func_id的待执行命令
+    :param session:
+    :param datatime: 数据日期
+    :param func_id:
+    :param business_param:
+    :return: None
+    """
+    xs = get_exec_cmd(session, datatime, func_id, business_param)
+    for x in xs:
+        session.delete(x)
+    session.commit()
 
 
 def main():
@@ -130,9 +147,10 @@ def main():
     #                                        'exec_cmd': 'efg'}])
     # x = sess.query(TbExecCmd).all()
     # print(x[0].func_id)
-    xs = get_exec_cmd(sess, '1')
+    xs = get_exec_cmd(sess, '201808', '1')
     for x in xs:
-        print(x)
+        print(x.func_id)
+    delete_exec_cmd(sess, '201808', '1')
     sess.commit()
 
 
