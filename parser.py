@@ -129,12 +129,12 @@ def deal_set_param(cmd_info_list, set_param_list):
     return result_list
 
 
-def deal_in_param(cmd_cfg_list, datatime, in_param_dict, business_param=''):
+def deal_in_param(cmd_cfg_list, in_param_dict, datatime, business_param=''):
     """
     处理输入参数
     :param cmd_cfg_list: list of TbCmdCfg
-    :param datatime: 数据日期
     :param in_param_dict: dict{param_name: param_value}
+    :param datatime: 数据日期
     :param business_param: 业务参数
     :return result_list: list of TbExecCmd
     """
@@ -147,7 +147,24 @@ def deal_in_param(cmd_cfg_list, datatime, in_param_dict, business_param=''):
                              exec_cmd=cmd_cfg.exec_cmd,
                              business_param=business_param)
         # 替换所有输入参数
-        for param_name, param_val in in_param_dict:
+        for param_name, param_val in in_param_dict.items():
+            cmd_info.exec_cmd = cmd_info.exec_cmd.replace(param_name, param_val)
+
+        result_list.append(cmd_info)
+
+    return result_list
+
+
+def deal_single_param(cmd_info_list, single_param_dict):
+    """
+    处理单值参数,逐个替换参数名为参数值即可
+    :param cmd_info_list: list of TbExecCmd
+    :param single_param_dict: dict{param_name: param_value}
+    :return result_list: list of TbExecCmd
+    """
+    result_list = []
+    for cmd_info in cmd_info_list:
+        for param_name, param_val in single_param_dict.items():
             cmd_info.exec_cmd = cmd_info.exec_cmd.replace(param_name, param_val)
 
         result_list.append(cmd_info)
