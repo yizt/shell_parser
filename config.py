@@ -10,7 +10,7 @@ Created on 2019/10/3 上午8:44
 
 
 class Config(object):
-    jdbc_url = ""
+    url = "mysql+mysqlconnector://yizt:12345678@127.0.0.1:3306/cmd_db?auth_plugin=mysql_native_password"
 
 
 cur_config = Config()
