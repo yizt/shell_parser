@@ -31,10 +31,10 @@ def get_in_param(datatime, business_param=''):
 
     # 业务参数
     if business_param is not None and len(business_param) > 0:
-        kvs = business_param.split('&')  # key=val
+        kvs = business_param.split(',')  # key=val
         for kv in kvs:
             k, v = kv.split('=')
-            result_dict[k] = v
+            result_dict["${}".format(k)] = v
 
     return result_dict
 
