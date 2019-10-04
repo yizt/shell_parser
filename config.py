@@ -13,4 +13,8 @@ class Config(object):
     url = "mysql+mysqlconnector://yizt:12345678@127.0.0.1:3306/cmd_db?auth_plugin=mysql_native_password"
 
 
-cur_config = Config()
+class PGConfig(Config):
+    url = "postgresql+psycopg2://postgres:123456@127.0.0.1:5432/cmd_db"
+
+
+cur_config = PGConfig()
