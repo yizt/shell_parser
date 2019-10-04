@@ -171,7 +171,11 @@ def get_list_values(session, expr):
 
 def main():
     from config import cur_config as cfg
-    sess = get_session(cfg.url)
+    engine = create_engine(cfg.url)
+    Base.metadata.create_all(engine)
+
+    # sess = get_session(cfg.url)
+
     # param_cfg = TbParamCfg(param_type='2332', param_name='123')
     # sess.add(param_cfg)
     # sess.commit()
@@ -185,9 +189,8 @@ def main():
     #                                        'datatime': '201808',
     #                                        'business_param': '',
     #                                        'exec_cmd': 'efg'}])
-    x = sess.query(TbCmdCfg).all()
-    import copy
-    y = copy.copy(x[0])
+    #x = sess.query(TbCmdCfg).all()
+
     # print(x[0].func_id)
     # xs = get_exec_cmd(sess, '201808', '1')
     # for x in xs:
@@ -195,8 +198,8 @@ def main():
     # delete_exec_cmd(sess, '201808', '1')
     # get_param_cfg(sess, 'in')
     # x = sess.execute('select 2018')
-    print(y.func_id)
-    sess.commit()
+    #print(y.func_id)
+    #sess.commit()
 
 
 if __name__ == '__main__':
