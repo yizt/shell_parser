@@ -72,7 +72,7 @@ mysql-connector
 |	exec_date	|	运行日期	|		|
 |	business_param	|	自定义业务参数	|		|
 
-##创建表
+## 创建表
 
 在config.py中配置好数据库连接信息，执行如下命令即可
 ```shell
