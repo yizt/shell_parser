@@ -172,13 +172,17 @@ def get_list_values(session, expr):
 def main():
     from config import cur_config as cfg
     engine = create_engine(cfg.url)
-    Base.metadata.create_all(engine)
+    Base.metadata.create_all(engine)  # 创建所有表结构
 
-    # sess = get_session(cfg.url)
 
-    # param_cfg = TbParamCfg(param_type='2332', param_name='123')
-    # sess.add(param_cfg)
-    # sess.commit()
+def test():
+    from config import cur_config as cfg
+
+    sess = get_session(cfg.url)
+
+    param_cfg = TbParamCfg(param_type='2332', param_name='123')
+    sess.add(param_cfg)
+    sess.commit()
     # cmd_cfg = TbCmdCfg(func_id='1243', seq=2.5)
     # exec_cmd = TbExecCmd(func_id='1', seq=1, datatime='201808', memo='abc')
     # sess.add(exec_cmd)
@@ -189,7 +193,7 @@ def main():
     #                                        'datatime': '201808',
     #                                        'business_param': '',
     #                                        'exec_cmd': 'efg'}])
-    #x = sess.query(TbCmdCfg).all()
+    # x = sess.query(TbCmdCfg).all()
 
     # print(x[0].func_id)
     # xs = get_exec_cmd(sess, '201808', '1')
@@ -198,8 +202,8 @@ def main():
     # delete_exec_cmd(sess, '201808', '1')
     # get_param_cfg(sess, 'in')
     # x = sess.execute('select 2018')
-    #print(y.func_id)
-    #sess.commit()
+    # print(y.func_id)
+    # sess.commit()
 
 
 if __name__ == '__main__':
