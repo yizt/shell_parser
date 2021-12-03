@@ -7,9 +7,10 @@ Created on 2019/10/3 下午2:34
 @author: mick.yi
 
 """
+import copy
+
 import db
 from db import TbExecCmd
-import copy
 
 
 def get_in_param(datatime, business_param=''):
@@ -35,7 +36,6 @@ def get_in_param(datatime, business_param=''):
         for kv in kvs:
             k, v = kv.split('=')
             result_dict["${}".format(k)] = v
-
     return result_dict
 
 
@@ -99,7 +99,7 @@ def get_params(session, datatime, business_param=''):
     return in_params, single_params, set_params
 
 
-def deal_set_param(cmd_info_list, set_param_list):
+def deal_set_param_bak(cmd_info_list, set_param_list):
     """
     处理集合参数
     :param cmd_info_list: list of TbExecCmd
@@ -124,6 +124,63 @@ def deal_set_param(cmd_info_list, set_param_list):
 
         # 递归处理
         result_list.extend(deal_set_param(cur_cmd_list, set_param_list[1:]))
+
+    return result_list
+
+
+def get_cur_dependency_param(dependency_param_list, cur_set_param_name):
+    """
+    根据集合参数名获取对应的依赖参数
+    :param dependency_param_list: list of TbParamCfg
+    :param cur_set_param_name: 集合参数名
+    :return dependency_param_name_list:
+    :return dependency_param_expr_list:
+    """
+    dependency_param_name_list, dependency_param_expr_list = [], []
+    for param_cfg in dependency_param_list:
+        if cur_set_param_name in param_cfg.param_val_expr:
+            dependency_param_name_list.append(param_cfg.param_name)
+            dependency_param_expr_list.append(param_cfg.param_val_expr)
+    return dependency_param_name_list, dependency_param_expr_list
+
+
+def deal_set_param(session, cmd_info_list, set_param_list, dependency_param_list):
+    """
+    处理集合参数
+    :param session:
+    :param cmd_info_list: list of TbExecCmd
+    :param set_param_list: list of tuple(param_name,param_values)
+    :param dependency_param_list: 依赖参数 list of TbParamCfg
+    :return result_list: list of TbExecCmd
+    """
+    if len(set_param_list) == 0:
+        return cmd_info_list
+    cur_param_name, cur_param_values = set_param_list[0]  # 当前的参数键值对
+    dependency_param_name_list, dependency_param_expr_list = get_cur_dependency_param(dependency_param_list,
+                                                                                      cur_param_name)
+    result_list = []  # 最终结果
+    # 遍历所有元素
+    for cmd_info in cmd_info_list:
+        cur_cmd_list = []
+        if cur_param_name in cmd_info.exec_cmd:  # 命令包含当前set参数
+            for cur_param_val in cur_param_values:
+                cur_cmd_info = copy.deepcopy(cmd_info)
+                cur_cmd_info.memo += ";{}={}".format(cur_param_name, cur_param_val)
+                cur_cmd_info.exec_cmd = cur_cmd_info.exec_cmd.replace(cur_param_name, str(cur_param_val))
+                # 处理依赖参数
+                for dependency_param_name, dependency_param_expr in zip(dependency_param_name_list,
+                                                                        dependency_param_expr_list):
+                    dependency_param_val = db.get_constant_val(session,
+                                                               dependency_param_expr.replace(cur_param_name,
+                                                                                             str(cur_param_val)))
+
+                    cur_cmd_info.exec_cmd = cur_cmd_info.exec_cmd.replace(dependency_param_name, dependency_param_val)
+                cur_cmd_list.append(cur_cmd_info)
+        else:
+            cur_cmd_list.append(cmd_info)
+
+        # 递归处理
+        result_list.extend(deal_set_param(session, cur_cmd_list, set_param_list[1:], dependency_param_list))
 
     return result_list
 
@@ -184,8 +241,12 @@ def parse(cmd_cfg_list, session, datatime, business_param=''):
     cmd_info_list = deal_in_param(cmd_cfg_list, in_param_dict, datatime, business_param)
     # 替换单值参数
     cmd_info_list = deal_single_param(cmd_info_list, single_param_dict)
+    # # 替换集合参数
+    # cmd_info_list = deal_set_param(cmd_info_list, list(set_param_dict.items()))
     # 替换集合参数
-    cmd_info_list = deal_set_param(cmd_info_list, list(set_param_dict.items()))
+    dependency_param_list = db.get_param_cfg(session, 'dependency')  # 获取依赖参数
+    cmd_info_list = deal_set_param(session, cmd_info_list, list(set_param_dict.items()), dependency_param_list)
+
     # seq字段赋值
     for i, cmd_info in enumerate(cmd_info_list):
         cmd_info.seq = i + 1

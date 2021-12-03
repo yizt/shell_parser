@@ -81,7 +81,7 @@ class TbExecCmd(Base):
     end_time = Column(DateTime())
     exec_elapsed = Column(BigInteger())
     exec_date = Column(Date())
-    business_param = Column(String(40))
+    business_param = Column(String(200))
 
     __table_args__ = (
         PrimaryKeyConstraint('datatime', 'seq', 'func_id', 'business_param'),
