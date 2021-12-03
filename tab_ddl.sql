@@ -37,7 +37,7 @@ CREATE TABLE `tb_execcmd` (
   `end_time` datetime DEFAULT NULL,
   `exec_elapsed` bigint(22) DEFAULT NULL,
   `exec_date` date DEFAULT NULL,
-  `business_param` varchar(40) NOT NULL DEFAULT '',
+  `business_param` varchar(200) NOT NULL DEFAULT '',
   PRIMARY KEY (`datatime`,`func_id`,`seq`,`business_param`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -80,7 +80,7 @@ CREATE TABLE public.tb_execcmd (
 	end_time timestamp NULL,
 	exec_elapsed int8 NULL,
 	exec_date date NULL,
-	business_param varchar(40) NOT NULL,
+	business_param varchar(200) NOT NULL,
 	CONSTRAINT tb_execcmd_pkey PRIMARY KEY (datatime, seq, func_id, business_param)
 );
 
