@@ -116,3 +116,13 @@ select * from tb_execcmd
   where func_id='inference_yizt' and datatime='20191005' and business_param='num_images=50000,num_steps=150000,gpu_id=5'  
  order by  seq;
 ```
+
+## 更新记录
+
+1、20221214日，增加命令行集合参数，`param_type`为`cmdset`; 如下例：
+
+|	param_type	|	param_name	|	param_desc	|	param_format	|	param_val_expr	|	enable	|	replace_order	|
+|	----	|	----	|	----	|	----	|	----	|	----	|	----	|
+|	cmdset	|	$video_list	|	测试视频列表	|	(null)	|	ls $vdir	|	1	|	0	|
+
+`$video_list` 会被替换为多条执行命令，每个值为`ls $vdir`执行的结果中的元素，`$vdir`是`single`类型参数或者业务参数
