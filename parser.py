@@ -8,6 +8,7 @@ Created on 2019/10/3 下午2:34
 
 """
 import copy
+import subprocess
 
 import db
 from db import TbExecCmd
@@ -83,6 +84,29 @@ def get_set_param(session, in_param_dict):
     return result_dict
 
 
+def get_cmd_set_param(session, in_param_dict):
+    """
+    获取命令行的集合参数
+    :param session:
+    :param in_param_dict: dict{param_name: param_value}
+    :return: dict{param_name: param_value}
+    """
+    set_params = db.get_param_cfg(session, 'cmdset')  # list of TbParamCfg
+
+    result_dict = {}
+    for param_cfg in set_params:
+        expr = param_cfg.param_val_expr
+        # 逐个替换输入参数
+        for k, v in in_param_dict.items():
+            expr = expr.replace(k, v)
+
+        # 根据命令行获取集合值
+        _, val_str = subprocess.getstatusoutput(expr)
+        result_dict[param_cfg.param_name] = val_str.splitlines()
+
+    return result_dict
+
+
 def get_params(session, datatime, business_param=''):
     """
     获取所有配置参数
@@ -96,6 +120,8 @@ def get_params(session, datatime, business_param=''):
     in_params = get_in_param(datatime, business_param)
     single_params = get_single_param(session, in_params)
     set_params = get_set_param(session, in_params)
+    cmd_set_params = get_cmd_set_param(session, in_params)
+    set_params.update(cmd_set_params)  # 合并数据库和cmd的集合参数
     return in_params, single_params, set_params
 
 
