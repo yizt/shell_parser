@@ -253,13 +253,40 @@ def deal_single_param(cmd_info_list, single_param_dict):
     return result_list
 
 
-def parse(cmd_cfg_list, session, datatime, business_param=''):
+def deal_runtime_param(session, cmd_info_list, runtime_dict):
+    """
+    处理runtime参数
+    :param session:
+    :param cmd_info_list:
+    :param runtime_dict: 运行时替换的k-v对
+    :return: dict{param_name: param_value}
+    """
+    runtime_params = db.get_param_cfg(session, 'runtime')  # list of TbParamCfg
+    result_list = []
+    for cmd_info in cmd_info_list:
+        for param_cfg in runtime_params:
+            expr = param_cfg.param_val_expr
+            # 替换seq no
+            expr = expr.replace("$seq_no", str(cmd_info.seq))
+            # 逐个替换输入参数
+            for k, v in runtime_dict.items():
+                expr = expr.replace(k, v)
+            # 根据表达式获取常量值
+            param_val = db.get_constant_val(session, expr)
+            cmd_info.exec_cmd = cmd_info.exec_cmd.replace(param_cfg.param_name, param_val)
+        result_list.append(cmd_info)
+
+    return result_list
+
+
+def parse(cmd_cfg_list, session, datatime, business_param='', runtime_dict: dict = None):
     """
     将命令配置对象TbCmdCfg解析为命令运行对象TbExecCmd
     :param cmd_cfg_list: list of TbCmdCfg
     :param session:
     :param datatime: 数据日期
     :param business_param: 自定义的业务参数 eg: a=15,b=abc,c=hello
+    :param runtime_dict:
     :return cmd_info_list: list of TbExecCmd
     """
     in_param_dict, single_param_dict, set_param_dict = get_params(session, datatime, business_param)
@@ -276,4 +303,8 @@ def parse(cmd_cfg_list, session, datatime, business_param=''):
     # seq字段赋值
     for i, cmd_info in enumerate(cmd_info_list):
         cmd_info.seq = i + 1
+    # 多线程runtime参数
+    if runtime_dict is not None:
+        cmd_info_list = deal_runtime_param(session, cmd_info_list, runtime_dict)
+
     return cmd_info_list
