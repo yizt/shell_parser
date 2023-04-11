@@ -14,7 +14,7 @@ class Config(object):
 
 
 class PGConfig(Config):
-    url = "postgresql+psycopg2://postgres:123456@127.0.0.1:5432/cmd_db"
+    url = "postgresql+psycopg2://postgres:123456@10.71.4.32:5432/cmd_db"
 
 
 cur_config = PGConfig()

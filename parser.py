@@ -29,7 +29,7 @@ def get_in_param(datatime, business_param=''):
         result_dict['$curday'] = datatime + '01'
     else:
         result_dict['$curmon'] = datatime[:6]
-        result_dict['$curday'] = datatime
+        result_dict['$curday'] = datatime[:8]
 
     # 业务参数
     if business_param is not None and len(business_param) > 0:
@@ -101,7 +101,9 @@ def get_cmd_set_param(session, in_param_dict):
             expr = expr.replace(k, v)
 
         # 根据命令行获取集合值
+        # print("param_name:{}\nexpr:{}\n".format(param_cfg.param_name, expr))
         _, val_str = subprocess.getstatusoutput(expr)
+        # print("param_name:{}\nexpr:{}\nval:{}".format(param_cfg.param_name, expr, val_str))
         result_dict[param_cfg.param_name] = val_str.splitlines()
 
     return result_dict
