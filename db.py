@@ -70,10 +70,10 @@ class TbExecCmd(Base):
     """
     __tablename__ = 'tb_execcmd'
 
-    datatime = Column(String(8))
+    datatime = Column(String(14))
     func_id = Column(String(40))
     seq = Column(BigInteger())
-    memo = Column(String(100))
+    memo = Column(String(400))
     exec_cmd = Column(Text())
     flag = Column(SMALLINT())
     err_msg = Column(Text())
@@ -81,7 +81,7 @@ class TbExecCmd(Base):
     end_time = Column(DateTime())
     exec_elapsed = Column(BigInteger())
     exec_date = Column(Date())
-    business_param = Column(String(200))
+    business_param = Column(String(400))
 
     __table_args__ = (
         PrimaryKeyConstraint('datatime', 'seq', 'func_id', 'business_param'),
@@ -154,7 +154,7 @@ def get_constant_val(session, expr):
     :return:
     """
     xs = session.execute('select {}'.format(expr))
-    return next(xs)[0]
+    return str(next(xs)[0])
 
 
 def get_list_values(session, expr):
