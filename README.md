@@ -33,44 +33,44 @@ mysql-connector
 
 **参数配置表tb_param_cfg**
 
-|	字段名	|	中文名	|	备注	|
-|	----	|	----	|	----	|
-|	param_type	|	参数类型	|	in-输入参数;single-单值参数;set-集合参数	|
-|	param_name	|	参数名称	|		|
-|	param_desc	|	参数说明	|		|
-|	param_format	|	格式	|	不会实际起作用	|
-|	param_val_expr	|	参数值表达式	|	单值参数或集合参数的参数值表达式,执行该表达式获取参数值	|
-|	enable	|	是否启用	|	1-启用;0-不启用	|
-|	replace_order	|	替换顺序	|	某些参数名称是其它参数的前缀情况下,替换有问题,指定顺序，保证替换正确	|
+| 	字段名	            | 	中文名	    | 	备注	                                                                    |
+|------------------|----------|-------------------------------------------------------------------------|
+| 	param_type	     | 	参数类型	   | 	in-输入参数;single-单值参数;set-集合参数;cmdset-命令行参数;dependency-依赖参数;runtim运行时参数	 |
+| 	param_name	     | 	参数名称	   | 		                                                                      |
+| 	param_desc	     | 	参数说明	   | 		                                                                      |
+| 	param_format	   | 	格式	     | 	不会实际起作用	                                                               |
+| 	param_val_expr	 | 	参数值表达式	 | 	单值参数或集合参数的参数值表达式,执行该表达式获取参数值	                                          |
+| 	enable	         | 	是否启用	   | 	1-启用;0-不启用	                                                            |
+| 	replace_order	  | 	替换顺序	   | 	某些参数名称是其它参数的前缀情况下,替换有问题,指定顺序，保证替换正确	                                   |
 
 **命令行配置表tb_cmd_cfg**
 
-|	字段名	|	中文名	|	备注	|
-|	----	|	----	|	----	|
-|	seq	|	序号	|	执行顺序	|
-|	func_id	|	功能标识	|		|
-|	cfg_key	|	命令行标志	|		|
-|	memo	|	命令行备注	|		|
-|	exec_cmd	|	命令行	|		|
-|	enable	|	是否启用	|	1-启用;0-不启用	|
+| 	字段名	      | 	中文名	   | 	备注	         |
+|------------|---------|--------------|
+| 	seq	      | 	序号	    | 	执行顺序	       |
+| 	func_id	  | 	功能标识	  | 		           |
+| 	cfg_key	  | 	命令行标志	 | 		           |
+| 	memo	     | 	命令行备注	 | 		           |
+| 	exec_cmd	 | 	命令行	   | 		           |
+| 	enable	   | 	是否启用	  | 	1-启用;0-不启用	 |
 
 
 **命令行运行表tb_execcmd**
 
-|	字段名	|	中文名	|	备注	|
-|	----	|	----	|	----	|
-|	datatime	|	数据时间	|		|
-|	func_id	|	命令行标志	|		|
-|	seq	|	序号	|		|
-|	memo	|	命令行备注	|		|
-|	exec_cmd	|	命令行	|		|
-|	flag	|	命令返回标志	|	0-成功.其它-失败	|
-|	err_msg	|	输出信息、错误信息	|		|
-|	start_time	|	开始运行时间	|		|
-|	end_time	|	结束运行时间	|		|
-|	exec_elapsed	|	耗时(单位秒)	|		|
-|	exec_date	|	运行日期	|		|
-|	business_param	|	自定义业务参数	|		|
+| 	字段名	            | 	中文名	       | 	备注	         |
+|------------------|-------------|--------------|
+| 	datatime	       | 	数据时间	      | 		           |
+| 	func_id	        | 	命令行标志	     | 		           |
+| 	seq	            | 	序号	        | 		           |
+| 	memo	           | 	命令行备注	     | 		           |
+| 	exec_cmd	       | 	命令行	       | 		           |
+| 	flag	           | 	命令返回标志	    | 	0-成功.其它-失败	 |
+| 	err_msg	        | 	输出信息、错误信息	 | 		           |
+| 	start_time	     | 	开始运行时间	    | 		           |
+| 	end_time	       | 	结束运行时间	    | 		           |
+| 	exec_elapsed	   | 	耗时(单位秒)	   | 		           |
+| 	exec_date	      | 	运行日期	      | 		           |
+| 	business_param	 | 	自定义业务参数	   | 		           |
 
 ## 创建表
 
@@ -85,18 +85,21 @@ python db.py
    
    tb_cmd_cfg表数据样例
    
-|	param_type	|	param_name	|	param_desc	|	param_format	|	param_val_expr	|	enable	|	replace_order	|
-|	----	|	----	|	----	|	----	|	----	|	----	|	----	|
-|	in	|	$businessparam	|	业务参数	|	(null)	|	(null)	|	1	|	0	|
-|	in	|	$curday	|	当日	|	yyyymmdd	|	(null)	|	1	|	0	|
-|	in	|	$curmon	|	当月	|	yyyymm	|	(null)	|	1	|	0	|
-|	set	|	$mons	|	测试月份	|	(null)	|	select to_char(now() + (rownum &#124;&#124; ' mon')::interval,'YYYYMM') from (select row_number() over() as rownum from public.tb_param_cfg) as a where a.rownum<=2	|	1	|	1	|
-|	set	|	$number	|	测试数字	|	(null)	|	select rownum from (select row_number() over() as rownum from public.tb_param_cfg) as a where a.rownum<=2	|	1	|	2	|
-|	single	|	$nextday	|	下一日	|	yyyymmdd	|	to_char(to_date('$curday','YYYYMMDD') +  interval '1 day','YYYYMMDD')	|	1	|	1	|
-|	single	|	$template_dir	|	模板文件目录	|	(null)	|	'/sdb/tmp/users/yizt/config.template'	|	1	|	2	|
-|	single	|	$data_dir	|	当前训练数据目录	|	(null)	|	'/sdb/tmp/users/yizt/data/$datatime.$num_images.$num_steps.$gpu_id'	|	1	|	3	|
-|	single	|	$tf_research_dir	|	tensorflow model reseach目录	|	(null)	|	'/sdb/tmp/users/yizt/models/research'	|	1	|	5	|
-|	single	|	$syn_dir	|	图像合成工程目录	|	(null)	|	'/sdb/tmp/users/yizt/Yolo_as_Template_Matching'	|	1	|	4	|
+| 	param_type	 | 	param_name	       | 	param_desc	                 | 	param_format	 | 	param_val_expr	                                                                                                                                                      | 	enable	 | 	replace_order	 |
+|--------------|--------------------|------------------------------|----------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------|-----------------|
+| 	in	         | 	$businessparam	   | 	业务参数	                       | 	(null)	       | 	(null)	                                                                                                                                                              | 	1	      | 	0	             |
+| 	in	         | 	$curday	          | 	当日	                         | 	yyyymmdd	     | 	(null)	                                                                                                                                                              | 	1	      | 	0	             |
+| 	in	         | 	$curmon	          | 	当月	                         | 	yyyymm	       | 	(null)	                                                                                                                                                              | 	1	      | 	0	             |
+| 	set	        | 	$mons	            | 	测试月份	                       | 	(null)	       | 	select to_char(now() + (rownum &#124;&#124; ' mon')::interval,'YYYYMM') from (select row_number() over() as rownum from public.tb_param_cfg) as a where a.rownum<=2	 | 	1	      | 	1	             |
+| 	set	        | 	$number	          | 	测试数字	                       | 	(null)	       | 	select rownum from (select row_number() over() as rownum from public.tb_param_cfg) as a where a.rownum<=2	                                                           | 	1	      | 	2	             |
+| 	cmdset	     | 	$file_name	       | 	文件列表	                       | 	(null)	       | 	ls $odir	                                                                                                                                                            | 	1	      | 	1	             |
+| 	dependency	 | 	$video_name	      | 	文件名不带路径	                    | 	(null)	       | 	(select reverse(split_part(reverse('$videos'),'/',1)))	                                                                                                              |
+| 	runtime	    | 	$pno	             | 	进程编号	                       | 	(null)	       | 	(select mod($seq_no,$num_processes))	                                                                                                                                | 	1	      | 	1	             |
+| 	single	     | 	$nextday	         | 	下一日	                        | 	yyyymmdd	     | 	to_char(to_date('$curday','YYYYMMDD') +  interval '1 day','YYYYMMDD')	                                                                                               | 	1	      | 	1	             |
+| 	single	     | 	$template_dir	    | 	模板文件目录	                     | 	(null)	       | 	'/sdb/tmp/users/yizt/config.template'	                                                                                                                               | 	1	      | 	2	             |
+| 	single	     | 	$data_dir	        | 	当前训练数据目录	                   | 	(null)	       | 	'/sdb/tmp/users/yizt/data/$datatime.$num_images.$num_steps.$gpu_id'	                                                                                                 | 	1	      | 	3	             |
+| 	single	     | 	$tf_research_dir	 | 	tensorflow model reseach目录	 | 	(null)	       | 	'/sdb/tmp/users/yizt/models/research'	                                                                                                                               | 	1	      | 	5	             |
+| 	single	     | 	$syn_dir	         | 	图像合成工程目录	                   | 	(null)	       | 	'/sdb/tmp/users/yizt/Yolo_as_Template_Matching'	                                                                                                                     | 	1	      | 	4	             |
 
 2. 脚本配置
     一个配置脚本例子(tb_cmd_cfg表exec_cmd字段);
@@ -126,3 +129,50 @@ select * from tb_execcmd
 |	cmdset	|	$video_list	|	测试视频列表	|	(null)	|	ls $vdir	|	1	|	0	|
 
 `$video_list` 会被替换为多条执行命令，每个值为`ls $vdir`执行的结果中的元素，`$vdir`是`single`类型参数或者业务参数
+
+## 参数用法举例
+
+### cmdset
+通过shell命令行执行的替换参数
+```shell
+for fn in $(find $odir -maxdepth 1 -mmin +1 -type d -printf '%f\n' | sort | head -n $topn)
+do
+if [ ! -f "$vdir/$fn.mp4"  ];then
+echo $fn
+fi
+done 
+```
+
+```shell
+for fp in $(ssh -p 57800 user_name@ip "find /path/to/dir -size +100M -ctime -1 | sort")
+do
+fn=`echo $fp| awk -F '/' '{print $5}'`
+#echo $fn
+if [ ! -f "$vdir/$fn" ];then
+echo $fp
+fi
+done
+```
+
+```shell
+for fn in $(find $vdir -maxdepth 1 -mmin +10 -ctime -8 -type d -printf '%f\n' | sort | head -n $topn)
+do
+vprefix=`echo $fn| awk -F '.' '{print $1}'`
+if [ ! -d "$odir/$vprefix" ];then
+echo $fn
+fi
+done 
+```
+
+### dependency
+依赖参数,依赖于某一个(刚好一个)集合参数:
+
+`(select reverse(split_part(reverse('$mask_test_dir_paths'),'/',1)))`
+
+### runtime
+`$seq_no`: 代表生成的`tb_execcmd`表中`seq`字段的值</br>
+`$num_processes`: 代表多线程执行时,线程数</br>
+显然都是生成运行脚步后,或者执行的时候才清楚具体的值,依赖于这两个参数的参数都是运行时参数,如下例子:</br>
+`$pno`: 哪个进程执行此seq `(select mod($seq_no,$num_processes))`</br>
+`$port_no`: 端口号 `(select 8000+mod($seq_no,2))`</br>
+
