@@ -77,7 +77,6 @@ def get_set_param(session, in_param_dict):
         # 逐个替换输入参数
         for k, v in in_param_dict.items():
             expr = expr.replace(k, v)
-
         # 根据表达式获取集合值
         result_dict[param_cfg.param_name] = db.get_list_values(session, expr)
 
@@ -101,9 +100,7 @@ def get_cmd_set_param(session, in_param_dict):
             expr = expr.replace(k, v)
 
         # 根据命令行获取集合值
-        # print("param_name:{}\nexpr:{}\n".format(param_cfg.param_name, expr))
         _, val_str = subprocess.getstatusoutput(expr)
-        # print("param_name:{}\nexpr:{}\nval:{}".format(param_cfg.param_name, expr, val_str))
         result_dict[param_cfg.param_name] = val_str.splitlines()
 
     return result_dict
@@ -275,7 +272,7 @@ def deal_runtime_param(session, cmd_info_list, runtime_dict):
                 expr = expr.replace(k, v)
             # 根据表达式获取常量值
             param_val = db.get_constant_val(session, expr)
-            cmd_info.exec_cmd = cmd_info.exec_cmd.replace(param_cfg.param_name, param_val)
+            cmd_info.exec_cmd = cmd_info.exec_cmd.replace(param_cfg.param_name, str(param_val))
         result_list.append(cmd_info)
 
     return result_list
