@@ -77,6 +77,9 @@ def get_set_param(session, in_param_dict):
         # 逐个替换输入参数
         for k, v in in_param_dict.items():
             expr = expr.replace(k, v)
+        # 如果仍然有未替换参数，说明本func_id用不到该参数
+        if "$" in expr:
+            continue
         # 根据表达式获取集合值
         result_dict[param_cfg.param_name] = db.get_list_values(session, expr)
 
@@ -98,7 +101,9 @@ def get_cmd_set_param(session, in_param_dict):
         # 逐个替换输入参数
         for k, v in in_param_dict.items():
             expr = expr.replace(k, v)
-
+        # 如果仍然有未替换参数，说明本func_id用不到该参数
+        if "$" in expr:
+            continue
         # 根据命令行获取集合值
         _, val_str = subprocess.getstatusoutput(expr)
         result_dict[param_cfg.param_name] = val_str.splitlines()
