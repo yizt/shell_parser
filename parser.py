@@ -183,6 +183,20 @@ def deal_set_param(session, cmd_info_list, set_param_list, dependency_param_list
     :param dependency_param_list: 依赖参数 list of TbParamCfg
     :return result_list: list of TbExecCmd
     """
+
+    def _replace_param_from_memo(memo: str, expr):
+        """
+        从memo字段信息获取集合参数的当前值，替换依赖参数中的集合参数
+        :param memo: memo中记录了所有集合参数当前值
+        :param expr: 依赖参数表达式
+        :return:
+        """
+        for kv in memo.split(";"):
+            if kv.__contains__("$"):
+                param_name, param_val = kv.split("=")
+                expr = expr.replace(param_name, param_val)
+        return expr
+
     if len(set_param_list) == 0:
         return cmd_info_list
     cur_param_name, cur_param_values = set_param_list[0]  # 当前的参数键值对
@@ -200,10 +214,12 @@ def deal_set_param(session, cmd_info_list, set_param_list, dependency_param_list
                 # 处理依赖参数
                 for dependency_param_name, dependency_param_expr in zip(dependency_param_name_list,
                                                                         dependency_param_expr_list):
+                    dependency_param_expr = _replace_param_from_memo(cur_cmd_info.memo, dependency_param_expr)
+                    # 如果仍然有未替换集合参数，说明暂时不用替换该依赖参数
+                    if "$" in dependency_param_expr:
+                        continue
                     dependency_param_val = db.get_constant_val(session,
-                                                               dependency_param_expr.replace(cur_param_name,
-                                                                                             str(cur_param_val)))
-
+                                                               dependency_param_expr)
                     cur_cmd_info.exec_cmd = cur_cmd_info.exec_cmd.replace(dependency_param_name, dependency_param_val)
                 cur_cmd_list.append(cur_cmd_info)
         else:
