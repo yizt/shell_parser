@@ -5,13 +5,31 @@ Created on 2019/10/3 上午8:50
 @author: mick.yi
 
 """
+import os
+import random
+import time
 
 from sqlalchemy import Column, String, Text, BigInteger, FLOAT, SMALLINT, \
     DateTime, Date, PrimaryKeyConstraint, create_engine, and_
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
+from concurrent.futures import ThreadPoolExecutor
 
 Base = declarative_base()
+
+
+def dummy_func(session):
+    """
+    间隔一段时间查询数据库，保证session活动状态，不会被服务器断开；
+    有些命令行执行非常久，比如llm微调
+    :param session:
+    :return:
+    """
+    print("dummy_func start")
+    while session.transaction:
+        get_constant_val(session, random.randint(1, 100))
+        time.sleep(100)
+    print("dummy_func end")
 
 
 def get_session(url):
@@ -22,6 +40,9 @@ def get_session(url):
     DBSession = sessionmaker(bind=engine)
     # 创建session对象:
     session = DBSession()
+    # 保持session处于活动状态
+    pool = ThreadPoolExecutor(max_workers=1)
+    pool.submit(dummy_func, session)
     return session
 
 

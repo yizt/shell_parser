@@ -8,6 +8,7 @@ Created on 2019/10/3 下午5:40
 
 """
 import sys
+import time
 
 import db
 import parser
@@ -65,6 +66,7 @@ def main(func_id, datatime, mode='normal', business_param=''):
         run.run_list(session, cmd_todo_list)
     # 关闭session
     session.close()
+    session.transaction = None
 
 
 if __name__ == '__main__':

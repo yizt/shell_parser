@@ -18,6 +18,7 @@ def process_run(pno, cmd_todo_list):
     session = db.get_session(cfg.url)
     run.run_list(session, cmd_todo_list)
     session.close()
+    session.transaction = None
 
 
 def multi_thread_run(num_processes, func_id, datatime, mode='normal', business_param=''):
@@ -55,6 +56,7 @@ def multi_thread_run(num_processes, func_id, datatime, mode='normal', business_p
         cmd_todo_list = [cmd for cmd in cmd_todo_list if cmd.flag is None or cmd.flag != 0]
         # 关闭session
         session.close()
+        session.transaction = None
         # run.run_list(session, cmd_todo_list)
         processes = []
         num_processes = int(num_processes)
