@@ -17,8 +17,8 @@ from main import generate_cmd_list
 def process_run(pno, cmd_todo_list):
     session = db.get_session(cfg.url)
     run.run_list(session, cmd_todo_list)
-    session.close()
     session.transaction = None
+    session.close()
 
 
 def multi_thread_run(num_processes, func_id, datatime, mode='normal', business_param=''):

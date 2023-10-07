@@ -28,6 +28,10 @@ SQLAlchemy
 psycopg2
 mysql-connector
 ```
+   如下命令安装依赖
+```shell
+pip install -r requirements.txt
+```
 
 ## 表结构说明
 
@@ -176,3 +180,7 @@ done
 `$pno`: 哪个进程执行此seq `(select mod($seq_no,$num_processes))`</br>
 `$port_no`: 端口号 `(select 8000+mod($seq_no,2))`</br>
 
+
+## toList
+1、数据库表默认值导入
+2、

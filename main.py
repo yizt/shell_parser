@@ -64,9 +64,10 @@ def main(func_id, datatime, mode='normal', business_param=''):
         cmd_todo_list = db.get_exec_cmd(session, datatime, func_id, business_param)
         cmd_todo_list = [cmd for cmd in cmd_todo_list if cmd.flag is None or cmd.flag != 0]
         run.run_list(session, cmd_todo_list)
+
+    session.transaction = None
     # 关闭session
     session.close()
-    session.transaction = None
 
 
 if __name__ == '__main__':

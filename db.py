@@ -28,7 +28,7 @@ def dummy_func(session):
     print("dummy_func start")
     while session.transaction:
         get_constant_val(session, random.randint(1, 100))
-        time.sleep(100)
+        time.sleep(1)
     print("dummy_func end")
 
 
