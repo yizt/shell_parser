@@ -40,7 +40,7 @@ def multi_thread_run(num_processes, func_id, datatime, mode='normal', business_p
     if mode in ['debug', 'redo']:
         # 先删除已存在的执行信息
         db.delete_exec_cmd(session, datatime, func_id, business_param)
-        session.commit()
+        session.flush()
         # 然后重新生成
         generate_cmd_list(session, datatime, func_id, business_param, runtime_dict)
 

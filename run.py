@@ -9,6 +9,8 @@ import subprocess
 import time
 import datetime
 import traceback
+from config import cur_config as cfg
+import db
 from db import TbExecCmd
 
 
@@ -29,6 +31,8 @@ def run_cmd(session, cmd_info):
     end_time = time.time()
     time_elapsed = end_time - start_time
 
+    if time_elapsed >= 0:
+        session = db.get_session(cfg.url)
     session.bulk_update_mappings(TbExecCmd, [{'func_id': cmd_info.func_id,
                                               'seq': cmd_info.seq,
                                               'datatime': cmd_info.datatime,
@@ -39,7 +43,7 @@ def run_cmd(session, cmd_info):
                                               'end_time': datetime.datetime.fromtimestamp(end_time),
                                               'exec_date': datetime.date.fromtimestamp(start_time),
                                               'exec_elapsed': time_elapsed}])
-    session.commit()
+    session.flush()
     return flag
 
 

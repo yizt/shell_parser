@@ -37,12 +37,12 @@ def get_session(url):
     engine = create_engine(url)
 
     # 创建DBSession类型:
-    DBSession = sessionmaker(bind=engine)
+    DBSession = sessionmaker(bind=engine, autocommit=True, autoflush=True)
     # 创建session对象:
     session = DBSession()
-    # 保持session处于活动状态
-    pool = ThreadPoolExecutor(max_workers=1)
-    pool.submit(dummy_func, session)
+    # # 保持session处于活动状态
+    # pool = ThreadPoolExecutor(max_workers=1)
+    # pool.submit(dummy_func, session)
     return session
 
 
@@ -72,7 +72,7 @@ class TbCmdCfg(Base):
     """
     __tablename__ = 'tb_cmd_cfg'
 
-    seq = Column(FLOAT())
+    seq = Column(FLOAT(), comment='序号')
     func_id = Column(String(40))
     cfg_key = Column(String(40))
     memo = Column(String(100))
@@ -164,7 +164,7 @@ def delete_exec_cmd(session, datatime, func_id, business_param=''):
     xs = get_exec_cmd(session, datatime, func_id, business_param)
     for x in xs:
         session.delete(x)
-    session.commit()
+    session.flush()
 
 
 def get_constant_val(session, expr):
